@@ -1,4 +1,6 @@
 package com.Bostic.BosticApp.domains;
 
-public interface AccountCredentialsRepository {
+import org.springframework.data.repository.CrudRepository;
+
+public interface AccountCredentialsRepository extends CrudRepository<AccountCredentials, Long> {
 }
