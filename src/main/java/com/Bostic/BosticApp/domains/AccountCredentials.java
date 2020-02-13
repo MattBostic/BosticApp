@@ -20,6 +20,11 @@ public class AccountCredentials {
 
     public AccountCredentials() {
     }
+    public AccountCredentials(String username, String password, String role) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
 
     public long getId() {
         return id;
@@ -49,9 +54,5 @@ public class AccountCredentials {
         this.role = role;
     }
 
-    public AccountCredentials(String username, String password, String role) {
-        this.username = username;
-        this.password = password;
-        this.role = role;
-    }
+
 }
