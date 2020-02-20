@@ -7,37 +7,37 @@
 </head>
 <body>
 
-    <div id="grid">
-        <div id="header"><h1>Bostic Family Blog</h1></div>
-        <div id="events">
-            <ul>
-                <li>Decker's first Birthday!!<br>March 7th 2019</li>
-                <li>pizza</li>
-            </ul>
-        </div>
-
-        <div class="postBody">
-                    <div th:each="image : ${images}"class="card">
-                    <td><a th:href="@{/image/(image_id=${image.id})}" class="imgLink">
-                        <img th:src="@{/image/(image_id=${image.id})}" class="thumbnail" }/></a></td>
-                        <div class="body">
-                            <p th:text="${image.body}" />
-                            <td>
-                                <form  th:method="delete" th:action="@{'/remove/' + ${image.id}}">
-                                    <input type="submit" value="delete" />
-                                </form>
-                            </td>
-                        </div>
-                    </div>
-
-            <form method="post" enctype="multipart/form-data" action="/imgUpload">
-                <p><input type="text" name="text"></p>
-                <p><input type="file" name="file" /></p>
-                <p><input type="submit" value="Upload" /></p>
-            </form>
-        </div>
+<div id="grid">
+    <div id="header"><h1>Bostic Family Blog</h1></div>
+    <div id="events">
+        <ul>
+            <li>Decker's first Birthday!!<br>March 7th 2019</li>
+            <li>pizza</li>
+        </ul>
     </div>
-    <div class="SideBar"></div>
+
+    <div class="postBody">
+        <div th:each="image : ${images}"class="card">
+            <td><a th:href="@{/image/(image_id=${image.id})}" class="imgLink">
+                <img th:src="@{/image/(image_id=${image.id})}" class="thumbnail" }/></a></td>
+            <div class="body">
+                <p th:text="${image.body}" />
+                <td>
+                    <form  th:method="delete" th:action="@{'/remove/' + ${image.id}}">
+                        <input type="submit" value="delete" />
+                    </form>
+                </td>
+            </div>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" action="/imgUpload">
+            <p><input type="text" name="text"></p>
+            <p><input type="file" name="file" /></p>
+            <p><input type="submit" value="Upload" /></p>
+        </form>
+    </div>
+</div>
+<div class="SideBar"></div>
 
 
 </body>
