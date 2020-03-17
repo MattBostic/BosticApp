@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<form method="post" enctype="multipart/form-data" action="/imgUpload">
+    <p><input type="text" name="text"></p>
+    <p><input type="file" name="file" /></p>
+    <p><input type="submit" value="Upload" /></p>
+</form>
+
+<form  th:method="delete" th:action="@{'/remove/' + ${image.id}}">
+    <input type="submit" value="delete" />
+</form>
+<script>function postPost(){
+
+        const url = '/posts'
+        let post = {
+            body: 'this post was created on the frontend',
+            imgURL: 'Another another Decker pic'
+        };
+
+        const payload = {
+            method : 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8'
+                },
+                body: JSON.stringify(post)
+            };
+
+        fetch(url, payload)
+        .then(response => {
+                console.log(response.status);
+                location.reload();
+        });
+
+}</script>
+
+</html>
+
+
+
+

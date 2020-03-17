@@ -17,13 +17,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import reactor.core.publisher.Flux;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.rowset.serial.SerialBlob;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -36,8 +35,8 @@ public class PostController {
     private LogoutController Logout = new LogoutController();
 
 
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    protected void logout(HttpServletRequest request, HttpServletResponse response, Authentication auth){
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    protected void logout(HttpServletRequest request, HttpServletResponse response, Authentication auth) throws ServletException {
           Logout.onLogoutSuccess(request, response, auth);
     }
 

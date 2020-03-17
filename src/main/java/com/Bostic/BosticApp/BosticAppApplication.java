@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
 @SpringBootApplication
@@ -18,21 +19,25 @@ import org.springframework.context.annotation.PropertySources;
 })
 public class BosticAppApplication {
 	@Autowired
+	private
 	AccountCredentialsRepository accountCredentialsRepository;
 
 	public static void main(String[] args) {
 
 		SpringApplication.run(BosticAppApplication.class, args);
 	}
+	
+
+	@Bean
+	public BCryptPasswordEncoder bCryptPasswordEncoder(){
+		return new BCryptPasswordEncoder();
+	}
 
 	@Bean
 	CommandLineRunner runner() {
 		return args -> {
-
-		AccountCredentials accountCredentials = new AccountCredentials("user",
-				"$2a$04$1.YhMIgNX/8TkCKGFUONWO1waedKhQ5KrnB30fl0Q01QKqmzLf.Zi", "USER");
-		accountCredentialsRepository.save(accountCredentials);
-			System.out.println(accountCredentialsRepository.findByUsername("user").getPassword());
+			 BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+			System.out.println(accountCredentialsRepository.findByUsername("matt").getPassword());
 		};
 	}
 

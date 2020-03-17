@@ -1,5 +1,7 @@
 package com.Bostic.BosticApp.domains;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import javax.persistence.*;
 
 @Entity
@@ -16,7 +18,7 @@ public class AccountCredentials {
     private String password;
 
     @Column(nullable = false)
-    private String role;
+    private String role = "user";
 
     public AccountCredentials() {
     }
@@ -25,6 +27,8 @@ public class AccountCredentials {
         this.password = password;
         this.role = role;
     }
+
+
 
     public long getId() {
         return id;

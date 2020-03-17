@@ -10,11 +10,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@SuppressWarnings("unused")
 @Controller
 public class LogoutController implements LogoutSuccessHandler {
 
@@ -24,29 +24,27 @@ public class LogoutController implements LogoutSuccessHandler {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public void onLogoutSuccess(HttpServletRequest req, HttpServletResponse res, Authentication authentication) {
+    public void onLogoutSuccess(HttpServletRequest req, HttpServletResponse res, Authentication authentication) throws ServletException {
         logger.debug("Performing logout");
         invalidateSession(req);
+        System.out.println(req.getAuthType());
         String returnTo = req.getScheme() + "://" + req.getServerName();
         if ((req.getScheme().equals("http") && req.getServerPort() != 80) || (req.getScheme().equals("https") && req.getServerPort() != 443)) {
             returnTo += ":" + req.getServerPort();
         }
         returnTo += "/";
-        String logoutUrl = String.format(
-                "https://%s/v2/logout?client_id=%s&returnTo=%s",
-                securityConfig.getDomain(),
-                securityConfig.getClientId(),
-                returnTo);
+
         try {
-            res.sendRedirect(logoutUrl);
+            res.sendRedirect(returnTo);
         } catch(IOException e){
             e.printStackTrace();
         }
     }
 
-    private void invalidateSession(HttpServletRequest request) {
+    private void invalidateSession(HttpServletRequest request) throws ServletException {
         if (request.getSession() != null) {
             request.getSession().invalidate();
+            request.logout();
         }
     }
 

@@ -1,5 +1,6 @@
 package com.Bostic.BosticApp.controller;
 
+import com.Bostic.BosticApp.TokenUtils;
 import com.Bostic.BosticApp.security.TokenAuthentication;
 import com.auth0.AuthenticationController;
 import com.auth0.IdentityVerificationException;
@@ -7,6 +8,7 @@ import com.auth0.Tokens;
 import com.auth0.jwt.JWT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -19,13 +21,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @SuppressWarnings("unused")
-@Controller
+//@Controller
 public class CallbackController {
 
-    @Autowired
+//    @Autowired
     private AuthenticationController controller;
     private final String redirectOnFail;
     private final String redirectOnSuccess;
+    private TokenUtils tokenUtils;
+    private Authentication auth;
 
     public CallbackController() {
         this.redirectOnFail = "/login";
@@ -46,6 +50,7 @@ public class CallbackController {
         try {
             Tokens tokens = controller.handle(request, response);
             TokenAuthentication tokenAuth = new TokenAuthentication(JWT.decode(tokens.getIdToken()));
+            System.out.println(tokenAuth.getClaims());
             SecurityContextHolder.getContext().setAuthentication(tokenAuth);
             response.sendRedirect(redirectOnSuccess);
         } catch (AuthenticationException | IdentityVerificationException e) {

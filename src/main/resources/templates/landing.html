@@ -1,21 +1,18 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layouts/default">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.springframework.org/schema/data/jaxb" layout:decorator="layouts/default">
+<head><link th:href="@{/css/landing.css}" rel="stylesheet" type="text/css"/></head>
+<body>
+    <div id="page" layout:fragment="content">
+        <div id="container">
+            <header>Bostic Family Blog</header>
+            <p>Welcome to our piece of the internet.<br>
+                You should have received a user login from one of us "Adults".<br>
+                Please click login and enter the credentials there.
+            </p>
+            <button id="login" onclick="window.location.href = document.URL +'login'"> login</button>
 
-<div id="page" layout:fragment="content">
-    <div class="container">
-        <div class="mt-5">
-            <div class="text-center hero my-5">
-                <img class="mb-3 app-logo" src="/logo.png" alt="Spring logo" width="120"/>
-                <h1 class="mb-4">Spring MVC Security Sample Project</h1>
-                <p class="lead">
-                    Landing page for family app
-                </p>
-            </div>
-
-            <hr/>
         </div>
-
     </div>
-</div>
-
+</body>
 </html>
