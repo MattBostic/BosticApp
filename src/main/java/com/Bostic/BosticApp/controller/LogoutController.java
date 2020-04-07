@@ -1,51 +1,59 @@
 package com.Bostic.BosticApp.controller;
 
-import com.Bostic.BosticApp.security.SecurityConfig;
+import com.Bostic.BosticApp.domains.JWTBlacklist;
+import com.Bostic.BosticApp.domains.JWTBlacklistRepository;
+import com.Bostic.BosticApp.security.TokenAuthentication;
+import com.Bostic.BosticApp.service.CookieService;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.sql.Date;
+
+import static com.Bostic.BosticApp.security.SecurityConstants.SECRET;
 
 @Controller
-public class LogoutController implements LogoutSuccessHandler {
+public class LogoutController implements LogoutHandler {
 
-    @Autowired
-    private SecurityConfig securityConfig;
+    private JWTBlacklistRepository jwtBlacklistRepository;
+    private TokenAuthentication tokenAuthentication;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Override
-    public void onLogoutSuccess(HttpServletRequest req, HttpServletResponse res, Authentication authentication) throws ServletException {
-        logger.debug("Performing logout");
-        invalidateSession(req);
-        System.out.println(req.getAuthType());
-        String returnTo = req.getScheme() + "://" + req.getServerName();
-        if ((req.getScheme().equals("http") && req.getServerPort() != 80) || (req.getScheme().equals("https") && req.getServerPort() != 443)) {
-            returnTo += ":" + req.getServerPort();
-        }
-        returnTo += "/";
+    public LogoutController(JWTBlacklistRepository jwtBlacklistRepository) {
+        this.jwtBlacklistRepository = jwtBlacklistRepository;
+    }
 
+    @Override
+    public void logout (HttpServletRequest req, HttpServletResponse res,
+                        Authentication authentication) {
         try {
-            res.sendRedirect(returnTo);
-        } catch(IOException e){
+            invalidateSession(req);
+        } catch (ServletException e) {
             e.printStackTrace();
         }
     }
 
     private void invalidateSession(HttpServletRequest request) throws ServletException {
-        if (request.getSession() != null) {
+        if (request.getSession() != null && request.getCookies().length > 1) {
+            String token = new CookieService(request.getCookies()).getValue();
+            DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
+            .build()
+            .verify(token);
+            jwtBlacklistRepository.save(new JWTBlacklist(decodedJWT.getToken(), new Date(System.currentTimeMillis())));
             request.getSession().invalidate();
             request.logout();
+
         }
     }
+
 
 }

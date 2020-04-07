@@ -1,6 +1,7 @@
 package com.Bostic.BosticApp.controller;
 
 import com.Bostic.BosticApp.ImageSaver;
+import com.Bostic.BosticApp.domains.JWTBlacklistRepository;
 import com.Bostic.BosticApp.domains.Post;
 import com.Bostic.BosticApp.domains.PostRepository;
 import com.Bostic.BosticApp.security.TokenAuthentication;
@@ -31,13 +32,19 @@ import java.util.Optional;
 public class PostController {
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private JWTBlacklistRepository jwtBlacklistRepository;
     private ImageSaver imageSaver = new ImageSaver();
-    private LogoutController Logout = new LogoutController();
+    private LogoutController logout = new LogoutController(jwtBlacklistRepository);
 
 
-    @RequestMapping(value = "/logout", method = RequestMethod.POST)
-    protected void logout(HttpServletRequest request, HttpServletResponse response, Authentication auth) throws ServletException {
-          Logout.onLogoutSuccess(request, response, auth);
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    protected void logout(HttpServletRequest request, HttpServletResponse response, Authentication auth)
+            throws ServletException {
+        System.out.println("Logged out");
+
+        logout.logout(request, response, auth);
+
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)

@@ -1,18 +1,24 @@
 package com.Bostic.BosticApp.service;
 
 import com.Bostic.BosticApp.domains.AccountCredentials;
-import com.Bostic.BosticApp.domains.AccountCredentialsRepository;
+import com.Bostic.BosticApp.domains.JWTBlacklistRepository;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 @Service
 public class AuthorityService {
-    private AccountCredentialsRepository accountRepo;
+    @Autowired
+    JWTBlacklistRepository jwtRepo;
     public AuthorityService() {
+    }
+
+    public Boolean isInBlacklist(DecodedJWT decodedJWT){
+        return jwtRepo.existsById(decodedJWT.getToken());
     }
 
     public ArrayList<GrantedAuthority> setAuthorities(AccountCredentials credentials){

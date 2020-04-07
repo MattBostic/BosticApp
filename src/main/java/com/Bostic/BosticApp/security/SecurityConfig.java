@@ -1,22 +1,19 @@
 package com.Bostic.BosticApp.security;
 
 import com.Bostic.BosticApp.controller.LogoutController;
+import com.Bostic.BosticApp.domains.JWTBlacklistRepository;
 import com.Bostic.BosticApp.service.AccountDetailsService;
 import com.Bostic.BosticApp.service.AuthorityService;
-import com.auth0.AuthenticationController;
-import com.auth0.jwk.JwkProvider;
-import com.auth0.jwk.JwkProviderBuilder;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -26,42 +23,63 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    private JWTBlacklistRepository jwtBlacklistRepo;
     private AccountDetailsService accountService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private AuthorityService authorityService;
 
 
 
-    public SecurityConfig(AccountDetailsService accountService, AuthorityService authorityService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public SecurityConfig(JWTBlacklistRepository jwtBlacklistRepo, AccountDetailsService accountService, AuthorityService authorityService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.jwtBlacklistRepo = jwtBlacklistRepo;
         this.accountService = accountService;
         this.authorityService = authorityService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Bean
-    public LogoutSuccessHandler logoutSuccessHandler(){
-        return new LogoutController();
+    public LogoutHandler logoutHandler(){
+        return new LogoutController( jwtBlacklistRepo);
     }
+
+//    @Bean
+//    public LogoutHandler logoutHandler(){return new LogoutController( jwtBlacklistRepo);}
+
 
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-    http.csrf().disable();
-    http.cors()
+    http.csrf().disable().cors()
+
             .and()
             .authorizeRequests()
             .antMatchers("/userAccounts/**").hasRole("ADMIN")
-            .antMatchers("/**").hasRole("USER")
-            .antMatchers("/callback", "/login", "/", "/img/*.jpg", "/css/**", "/js/")
-            .permitAll().anyRequest().authenticated()
+            .antMatchers("/home").hasRole("USER")
+            .antMatchers("/imgUpload/**").permitAll()
+            .anyRequest()
+            .authenticated()
+
             .and()
             .addFilter(new JWTAuthenticationFilter(authenticationManager(), authorityService))
-            .addFilter(new JWTAuthorizationFilter(authenticationManager()))
+            .addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtBlacklistRepo))
+            .addFilterAfter(new BlackListFilter(jwtBlacklistRepo), JWTAuthorizationFilter.class)
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
             .and()
-            .logout().logoutSuccessHandler(logoutSuccessHandler()).permitAll();
+            .formLogin().loginPage("/login")
+            .defaultSuccessUrl("/home", true)
+            .permitAll()
+
+            .and()
+            .logout().addLogoutHandler(logoutHandler())
+            .logoutSuccessUrl("/").deleteCookies("Authorization");
+
+    }
+
+    @Override
+    public void configure(WebSecurity webSecurity) throws Exception{
+        webSecurity.ignoring().antMatchers("/", "/css/**", "/js/**", "/img/**");
     }
 
     @Override
@@ -81,5 +99,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
+
+
 
 }

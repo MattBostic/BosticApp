@@ -6,15 +6,22 @@
     <link th:href="@{/css/main.css}" rel="stylesheet" type="text/css"/>
 </head>
 <body>
+    <!--/* header*/-->
+    <div th:replace="fragments/header"></div>
 
-        <div class="postBody">
-            <div th:each="image : ${images}"class="card">
-                <td><a th:href="@{/image/(image_id=${image.id})}" class="imgLink">
-                    <img id="postImage" th:src="@{/image/(image_id=${image.id})}"}/></a></td>
-                <div class="body">
-                    <p th:text="${image.body}" />
-                </div>
-            </div>
-        </div>
+    <!--/* Upload post. Administrator access only */-->
+    <div th:replace="fragments/adminFunctions :: 'upload-post' "></div>
+
+    <!--/* Loop through each post*/-->
+    <div th:replace="fragments/card"></div>
+
+    <!--/* footer */-->
+    <div th:replace="fragments/footer"></div>
+
 </body>
 </html>
+
+
+
+
+

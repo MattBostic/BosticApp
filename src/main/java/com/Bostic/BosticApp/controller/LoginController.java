@@ -6,13 +6,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 
-@RestController
+@Controller
 public class LoginController {
 
 
@@ -21,11 +18,16 @@ public class LoginController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @PostMapping(value = "/login")
-    protected String login(final HttpServletRequest request, final HttpServletResponse res) {
-        System.out.println("loggedIn");
-        return "Matt";
+    @RequestMapping(value = "/login")
+    protected String login() {
+        return "login.html";
     }
+
+    @PostMapping(value = "/login")
+    protected String success(){
+        return "/index.html";
+    }
+
 
 
 }

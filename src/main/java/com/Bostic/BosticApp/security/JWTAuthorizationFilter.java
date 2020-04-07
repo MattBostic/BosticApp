@@ -1,41 +1,45 @@
 package com.Bostic.BosticApp.security;
 
 
+import com.Bostic.BosticApp.domains.JWTBlacklistRepository;
 import com.Bostic.BosticApp.service.AuthorityService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 
-import static com.Bostic.BosticApp.security.SecurityConstants.*;
+import static com.Bostic.BosticApp.security.SecurityConstants.SECRET;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
-    AuthorityService authorityService = new AuthorityService();
+    private AuthorityService authorityService = new AuthorityService();
+    @Autowired
+    private JWTBlacklistRepository jwtBlacklistRepository;
 
-    public JWTAuthorizationFilter(AuthenticationManager authManager) {
+    public JWTAuthorizationFilter(AuthenticationManager authManager, JWTBlacklistRepository jwtBlacklistRepository) {
         super(authManager);
-
+        this.jwtBlacklistRepository = jwtBlacklistRepository;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain chain) throws IOException, ServletException {
 
-        String header = request.getHeader(HEADER_STRING);
+        Cookie[] header = request.getCookies();
 
-
-        if (header == null || !header.startsWith(TOKEN_PREFIX)){
+        if (header == null || header.length < 1){
             chain.doFilter(request, response);
             return;
         }
@@ -46,26 +50,44 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         chain.doFilter(request, response);
     }
 
+
+
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request){
 
-        String token = request.getHeader(HEADER_STRING);
-        if (token != null){
-            //parse token
-            String user = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
-                    .build()
-                    .verify(token.replace(TOKEN_PREFIX, ""))
-                    .getSubject();
+        String token = null;
+        Cookie[] requestCookies = request.getCookies();
+        if(requestCookies != null){
+            for(Cookie cookie : requestCookies){
+                if(cookie.getName().equals("Authorization")){
 
-            Boolean claims = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
-                    .build()
-                    .verify(token.replace(TOKEN_PREFIX, ""))
-                    .getClaim("isAdmin").asBoolean();
+                    token = cookie.getValue();
+                }
 
-            if (user != null){
-                return new UsernamePasswordAuthenticationToken(user,
-                        null, authorityService.setAuthorities(claims));
             }
-            return null;
+        }
+
+        if (token != null){
+            try{
+                //parse token
+                DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
+                        .build()
+                        .verify(token);
+
+                String user = decodedJWT.getSubject();
+                Boolean claims = decodedJWT.getClaim("isAdmin").asBoolean();
+
+                if (user != null){
+                    return new UsernamePasswordAuthenticationToken(user,
+                            null, authorityService.setAuthorities(claims));
+                }
+                return null;
+
+            } catch (TokenExpiredException e){
+
+            }catch (JWTVerificationException | IllegalArgumentException e) {
+                e.printStackTrace();
+                return null;
+            }
         }
         return null;
     }

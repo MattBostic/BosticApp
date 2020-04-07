@@ -1,21 +1,18 @@
 package com.Bostic.BosticApp.controller;
 
-import com.Bostic.BosticApp.TokenUtils;
+import com.Bostic.BosticApp.domains.JWTBlacklistRepository;
 import com.Bostic.BosticApp.security.TokenAuthentication;
 import com.auth0.AuthenticationController;
 import com.auth0.IdentityVerificationException;
 import com.auth0.Tokens;
 import com.auth0.jwt.JWT;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -28,8 +25,8 @@ public class CallbackController {
     private AuthenticationController controller;
     private final String redirectOnFail;
     private final String redirectOnSuccess;
-    private TokenUtils tokenUtils;
     private Authentication auth;
+    private JWTBlacklistRepository jwtBlacklistRepository;
 
     public CallbackController() {
         this.redirectOnFail = "/login";
@@ -49,8 +46,8 @@ public class CallbackController {
     private void handle(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             Tokens tokens = controller.handle(request, response);
-            TokenAuthentication tokenAuth = new TokenAuthentication(JWT.decode(tokens.getIdToken()));
-            System.out.println(tokenAuth.getClaims());
+            TokenAuthentication tokenAuth = new TokenAuthentication(JWT.decode(tokens.getIdToken()),
+                    jwtBlacklistRepository);
             SecurityContextHolder.getContext().setAuthentication(tokenAuth);
             response.sendRedirect(redirectOnSuccess);
         } catch (AuthenticationException | IdentityVerificationException e) {
