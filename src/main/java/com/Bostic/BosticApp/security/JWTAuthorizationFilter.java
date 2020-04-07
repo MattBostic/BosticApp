@@ -3,6 +3,7 @@ package com.Bostic.BosticApp.security;
 
 import com.Bostic.BosticApp.domains.JWTBlacklistRepository;
 import com.Bostic.BosticApp.service.AuthorityService;
+import com.Bostic.BosticApp.service.CookieService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
@@ -55,15 +56,9 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request){
 
         String token = null;
-        Cookie[] requestCookies = request.getCookies();
-        if(requestCookies != null){
-            for(Cookie cookie : requestCookies){
-                if(cookie.getName().equals("Authorization")){
 
-                    token = cookie.getValue();
-                }
-
-            }
+        if(request.getCookies().length >= 1){
+            token = new CookieService(request.getCookies()).getValue();
         }
 
         if (token != null){
