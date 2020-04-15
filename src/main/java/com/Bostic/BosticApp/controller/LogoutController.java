@@ -45,6 +45,7 @@ public class LogoutController implements LogoutHandler {
     private void invalidateSession(HttpServletRequest request) throws ServletException {
         if (request.getSession() != null && request.getCookies().length > 1) {
             String token = new CookieService(request.getCookies()).getValue();
+
             DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
             .build()
             .verify(token);

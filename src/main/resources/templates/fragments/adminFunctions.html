@@ -4,10 +4,10 @@
 <head>
 </head>
     <body>
-        <form th:fragment="upload-post" sec:authorize="hasRole('ROLE_ADMIN')"
+        <form id="upload-func" th:fragment="upload-post" sec:authorize="hasRole('ROLE_ADMIN')"
               enctype="multipart/form-data"
               th:action="@{'/imgUpload'}"  th:method="post">
-            <p><input type="text" name="text"></p>
+            <textarea rows="3" cols="50" name="text"></textarea>
             <p><input type="file" name="file" /></p>
             <p><input type="submit" value="Upload" /></p>
         </form>

@@ -3,7 +3,7 @@
 <head></head>
 <body>
     <div id="postBody" th:if="${not {images}.isEmpty()}">
-        <tr th:each="image : ${images}" id="container">
+        <tr th:each="image : ${images}">
             <div id="card">
                 <td><a th:href="@{/image/(image_id=${image.id})}" class="imgLink">
                     <img id="postImage" th:src="@{/image/(image_id=${image.id})}"}/></a></td>

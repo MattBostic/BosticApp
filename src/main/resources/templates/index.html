@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width">
     <title>Family Blog</title>
     <link th:href="@{/css/main.css}" rel="stylesheet" type="text/css"/>
 </head>
@@ -9,11 +10,15 @@
     <!--/* header*/-->
     <div th:replace="fragments/header"></div>
 
-    <!--/* Upload post. Administrator access only */-->
-    <div th:replace="fragments/adminFunctions :: 'upload-post' "></div>
+    <div id="content-container">
 
-    <!--/* Loop through each post*/-->
-    <div th:replace="fragments/card"></div>
+        <!--/* Upload post. Administrator access only */-->
+        <div th:replace="fragments/adminFunctions :: 'upload-post' "></div>
+
+        <!--/* Loop through each post*/-->
+        <div th:replace="fragments/card"></div>
+
+    </div>
 
     <!--/* footer */-->
     <div th:replace="fragments/footer"></div>

@@ -57,7 +57,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
         String token = null;
 
-        if(request.getCookies().length >= 1){
+        if(request.getCookies().length > 1){
             token = new CookieService(request.getCookies()).getValue();
         }
 

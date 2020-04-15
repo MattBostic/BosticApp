@@ -3,21 +3,25 @@
     display: none;
 }
 
-.body {
+body {
     margin: 0;
     padding: 0;
 }
 
+#postBody, #header, #upload-func {
+    background-color: #f8f8ff;
+}
+
 #postBody {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     overflow: scroll;
     overflow-x: hidden;
     padding: 2px 16px;
 }
 
-
-
 #postImage {
-
     width: 90vw;
     overflow: hidden;
     margin-left: auto;
@@ -25,6 +29,25 @@
 
 }
 
+#card {
+    width: 92vw;
+    padding: 1rem;
+    margin: 1rem;
+    align-items: center;
+}
+
+#card, #upload-func {
+
+  /* Add shadows to create the "card" effect */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+
+}
+
+/* On mouse-over, add a deeper shadow */
+#card:hover, #upload-func {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
 
 th{
     border: 1px solid #999;
@@ -33,36 +56,32 @@ th{
     }
 
 
-#card {
-    display: flex;
-    flex-direction: column;
-    width: 90vw;
-  /* Add shadows to create the "card" effect */
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-  transition: 0.3s;
-  padding: 1rem;
-  margin-bottom: 1rem ;
-}
+@media  only screen and (min-width: 800px){
 
-/* On mouse-over, add a deeper shadow */
-.card:hover {
-  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-}
+    #card, #upload-func {
+         display: flex;
+         flex-direction: column;
+    }
 
-/* Add some padding inside the card container */
-.container {
-
-}
-
-
-
-@media screen and (min-width: 757px){
     #postBody {
-        display: flex;
+        flex-direction: row;
         flex-wrap: wrap;
+        align-items: stretch;
+        justify-content: center;
+
+    }
+
+    #card {
+        width: 45vw;
+        margin: .25rem;
+        align-items: center;
+        justify-content: center;
     }
 
     #postImage {
+
+        max-height: 100%;
+         max-width: 100%;
 
     }
 
