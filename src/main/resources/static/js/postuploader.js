@@ -1,23 +1,24 @@
-function postPost(){
 
-         const url = 'http://localhost/posts'
+ $(function() {
+     // Get the form.
+     var form = $('#form-signin');
 
-         const payload = {
-             method : 'POST',
-             headers: {
-                 'Accept': 'application/json',
-                 'Content-Type': 'application/json;charset=UTF-8'
-                 },
-                 body: JSON.stringify({
-                 body: 'This post was created on the frontend',
-                 imgURL: 'Another Decker pic.'
-                 })
+     // Get the messages div.
+     var formData = {
+          username : $("input#username").val(),
+          password : $("input#password").val()
+          };
+        $.ajax({
+                 type: 'POST',
+                     headers: {
+                         'Content-Type' : 'application/json'
+                         },
+                     url: '/login',
+                     data: JSON.stringify(formData),
+                     success: function(output, status, xhr){
+                            console.log(username);
 
-             };
+                     }
+             });
+ });
 
-         fetch(url, payload)
-         .then(response => {
-                 console.log(response.status);
-         });
-
- }

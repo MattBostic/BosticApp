@@ -1,0 +1,39 @@
+
+.header {
+    font-size : 20px;}
+  body{
+
+      text-align: center;
+      background-color: #cad2d5;
+      background-image: url("/img/main1.jpg");
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: cover;
+  }
+
+  #page {
+      width: 99%;
+      position: absolute;
+      bottom: 0;
+  }
+
+  #login {
+    font-size: 20px;
+    padding: 0 0 5vh 0;
+    border-radius: 12px;
+    background-color: transparent;
+    border: none;
+  }
+
+  @media screen and (min-width: 757px) {
+   body{
+         font-size: 40px;
+         text-align: center;
+         background-image: url("/img/landing.jpg");
+         background-repeat: no-repeat;
+         background-position: center;
+         background-size: cover;
+      }
+  }
+

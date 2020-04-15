@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+    <div id="postBody" th:if="${not {images}.isEmpty()}">
+        <tr th:each="image : ${images}">
+            <div id="card">
+                <td><a th:href="@{/image/(image_id=${image.id})}" class="imgLink">
+                    <img id="postImage" th:src="@{/image/(image_id=${image.id})}"}/></a></td>
+                <div class="body">
+                    <p th:text="${image.body}"></p>
+                </div>
+
+                <!--/* Delete post activity. Administrator access only*/-->
+                <div th:replace="fragments/adminFunctions :: 'delete-post' "></div>
+            </div>
+        </tr>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+</head>
+    <body>
+        <form id="upload-func" th:fragment="upload-post" sec:authorize="hasRole('ROLE_ADMIN')"
+              enctype="multipart/form-data"
+              th:action="@{'/imgUpload'}"  th:method="post">
+            <textarea rows="3" cols="50" name="text"></textarea>
+            <p><input type="file" name="file" /></p>
+            <p><input type="submit" value="Upload" /></p>
+        </form>
+
+        <form th:fragment="delete-post" sec:authorize="hasRole('ROLE_ADMIN')"
+              th:action="@{'/remove/' + ${image.id}}" th:method="delete">
+            <input type="submit" value="delete post"/>
+        </form>
+    </body>
+</html>

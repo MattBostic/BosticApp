@@ -1,82 +1,88 @@
 
 *::-webkit-scrollbar{
     display: none;
-
 }
 
-.body {
+body {
     margin: 0;
     padding: 0;
 }
 
-.postBody {
-    grid-area: postBody;
-    background: #FCC;
+#postBody, #header, #upload-func {
+    background-color: #f8f8ff;
+}
+
+#postBody {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     overflow: scroll;
     overflow-x: hidden;
+    padding: 2px 16px;
 }
 
-#grid {
-
-    display: grid;
-
-    grid-template-columns:
-        [col-a] 20% [col-b] 80%;
-    grid-template-rows:
-        [head] 8vh [content] 90vh [footer] 2vh;
-
-    grid-template-areas:
-        "header header"
-        "events postBody"
-        "footer footer";
+#postImage {
+    width: 90vw;
+    overflow: hidden;
+    margin-left: auto;
+    margin-right: auto;
 
 }
 
-#header {
-    grid-area: header;
-    text-align: center;
-    background: blue;
-    width: 100%;
-}
-#events {
-    grid-area: events;
-    background: yellow;
+#card {
+    width: 92vw;
+    padding: 1rem;
+    margin: 1rem;
+    align-items: center;
 }
 
-img{
-    height: 500px;
-    width: auto;
+#card, #upload-func {
+
+  /* Add shadows to create the "card" effect */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+
 }
 
-table {
-    border-collapse: collapse;
+/* On mouse-over, add a deeper shadow */
+#card:hover, #upload-func {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
 
 th{
     border: 1px solid #999;
-    padding: 0.5rem;
+    padding: auto;
     text-align: center;
     }
 
-.thumbnail{
-    max-width: 90%;
-    max-height: 90%;
+
+@media  only screen and (min-width: 800px){
+
+    #card, #upload-func {
+         display: flex;
+         flex-direction: column;
     }
 
+    #postBody {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: stretch;
+        justify-content: center;
 
-.card {
-  /* Add shadows to create the "card" effect */
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-  transition: 0.3s;
-  padding: 5px;
-}
+    }
 
-/* On mouse-over, add a deeper shadow */
-.card:hover {
-  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-}
+    #card {
+        width: 45vw;
+        margin: .25rem;
+        align-items: center;
+        justify-content: center;
+    }
 
-/* Add some padding inside the card container */
-.container {
-  padding: 2px 16px;
+    #postImage {
+
+        max-height: 100%;
+         max-width: 100%;
+
+    }
+
 }

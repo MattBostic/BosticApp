@@ -2,67 +2,31 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width">
     <title>Family Blog</title>
     <link th:href="@{/css/main.css}" rel="stylesheet" type="text/css"/>
 </head>
 <body>
+    <!--/* header*/-->
+    <div th:replace="fragments/header"></div>
 
-    <div id="grid">
-        <div id="header"><h1>Bostic Family Blog</h1></div>
-        <div id="events">
-            <ul>
-                <li>Decker's first Birthday!!<br>March 7th 2019</li>
-                <li>pizza</li>
-            </ul>
-        </div>
+    <div id="content-container">
 
-        <div class="postBody">
-                    <div th:each="image : ${images}"class="card">
-                    <td><a th:href="@{/image/(image_id=${image.id})}" class="imgLink">
-                        <img th:src="@{/image/(image_id=${image.id})}" class="thumbnail" }/></a></td>
-                        <div class="body">
-                            <p th:text="${image.body}" />
-                            <td>
-                                <form  th:method="delete" th:action="@{'/remove/' + ${image.id}}">
-                                    <input type="submit" value="delete" />
-                                </form>
-                            </td>
-                        </div>
-                    </div>
+        <!--/* Upload post. Administrator access only */-->
+        <div th:replace="fragments/adminFunctions :: 'upload-post' "></div>
 
-            <form method="post" enctype="multipart/form-data" action="/imgUpload">
-                <p><input type="text" name="text"></p>
-                <p><input type="file" name="file" /></p>
-                <p><input type="submit" value="Upload" /></p>
-            </form>
-        </div>
+        <!--/* Loop through each post*/-->
+        <div th:replace="fragments/card"></div>
+
     </div>
-    <div class="SideBar"></div>
 
+    <!--/* footer */-->
+    <div th:replace="fragments/footer"></div>
 
 </body>
-
-<script>function postPost(){
-
-        const url = '/posts'
-        let post = {
-            body: 'this post was created on the frontend',
-            imgURL: 'Another another Decker pic'
-        };
-
-        const payload = {
-            method : 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=UTF-8'
-                },
-                body: JSON.stringify(post)
-            };
-
-        fetch(url, payload)
-        .then(response => {
-                console.log(response.status);
-                location.reload();
-        });
-
-}</script>
 </html>
+
+
+
+
+
