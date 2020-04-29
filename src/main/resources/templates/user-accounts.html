@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Family Blog</title>
+    <link th:href="@{/css/main.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+    <div id="accounts-list" th:if="${not {accounts}.isEmpty()}">
+        <form id="account-form" th:action="@{/user-accounts/delete}" method="post">
+            <ul>
+                <li th:each="account : ${accounts}">
+                    <input th:id="${account.id}" type="checkbox" name="account" th:value="${account.id}">
+                    <label th:for="${account.id}" th:text="${account.username} + ' role: ' + ${account.role}"></label>
+                </li>
+            </ul>
+            <button type="submit">submit</button>
+        </form>
+    </div>
+</body>
+</html>

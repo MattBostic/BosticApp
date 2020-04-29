@@ -33,6 +33,10 @@ public class AccountCredentials {
     }
 
 
+    @Override
+    public String toString() {
+        return "Id: " + getId() + "\nUsername: " + getUsername() + "\nRole: " + getRole();
+    }
 
     public long getId() {
         return id;

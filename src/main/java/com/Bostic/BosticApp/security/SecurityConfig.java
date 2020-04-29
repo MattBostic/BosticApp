@@ -26,12 +26,13 @@ import java.util.Arrays;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JWTBlacklistRepository jwtBlacklistRepo;
     private AccountDetailsService accountService;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
     private AuthorityService authorityService;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
 
-    public SecurityConfig(JWTBlacklistRepository jwtBlacklistRepo, AccountDetailsService accountService, AuthorityService authorityService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public SecurityConfig(JWTBlacklistRepository jwtBlacklistRepo, AccountDetailsService accountService,
+                          AuthorityService authorityService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.jwtBlacklistRepo = jwtBlacklistRepo;
         this.accountService = accountService;
         this.authorityService = authorityService;
@@ -42,11 +43,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public LogoutHandler logoutHandler(){
         return new LogoutController( jwtBlacklistRepo);
     }
-
-//    @Bean
-//    public LogoutHandler logoutHandler(){return new LogoutController( jwtBlacklistRepo);}
-
-
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
