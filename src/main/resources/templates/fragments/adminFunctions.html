@@ -16,5 +16,39 @@
               th:action="@{'/remove/' + ${image.id}}" th:method="delete">
             <input type="submit" value="delete post"/>
         </form>
+
+        <div th:fragment="create-form" sec:authorize="hasRole('ROLE_ADMIN')">
+            <label for="create-form">Create new account.</label>
+
+            <form name="submitForm" class="form" id="create-form" onsubmit=" return validateForm()"
+                  th:action="@{/user-accounts/create}" method="post" th:object="${account}">
+
+                <label>username
+                    <input name="username" type="text" th:field="*{username}">
+                </label>
+                <label>password
+                    <input name="password" id="password1" type="password" th:field="*{password}">
+                </label>
+                <label>confirm password
+                    <input name="password2" id="password2" type="password">
+                </label>
+
+                <button type="submit">Create account</button>
+            </form>
+        </div>
+
+        <div th:fragment="account-delete" sec:authorize="hasRole('ROLE_ADMIN')" th:if="${not {accounts}.isEmpty()}">
+            <form id="account-form" th:action="@{/user-accounts/delete}" method="post" th:object="${account}">
+                <ul>
+                    <li th:each="account : ${accounts}">
+                        <input th:id="${account.id}" type="checkbox" name="account" th:value="${account.id}">
+                        <label th:for="${account.id}" th:text="${account.username} + ' role: ' + ${account.role}"></label>
+                    </li>
+                </ul>
+                <button type="submit">Delete Account</button>
+            </form>
+        </div>
+
+
     </body>
 </html>

@@ -5,6 +5,8 @@ import com.Bostic.BosticApp.domains.JWTBlacklistRepository;
 import com.Bostic.BosticApp.domains.Post;
 import com.Bostic.BosticApp.domains.PostRepository;
 import com.Bostic.BosticApp.security.TokenAuthentication;
+import com.Bostic.BosticApp.service.AccountCredentialsService;
+import com.Bostic.BosticApp.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,7 +18,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import reactor.core.publisher.Flux;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -27,11 +28,20 @@ import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Optional;
 
-//Class will handle all aspects of blog page mapping
+// TODO: Change direct dependency for the Post/JWT repository.
+//  Repo services needs to be injected to decouple the
+//  controller from direct database calls.
+
+// TODO: LogoutController is passed a repo during object construction.
+//  note to self -> that is funky, leave it up to Spring.
+
 @Controller
 public class PostController {
     @Autowired
     private PostRepository postRepository;
+    private AccountCredentialsService credentialsService;
+    @Autowired
+    private PostService postService;
     @Autowired
     private JWTBlacklistRepository jwtBlacklistRepository;
     private ImageSaver imageSaver = new ImageSaver();
@@ -57,20 +67,9 @@ public class PostController {
         return "landing.html";
     }
 
-
-    @GetMapping(value = "/i")
-    @CrossOrigin(origins = "http://localhost:3000")
-    public Flux<Post> getPosts(){
-        return Flux.fromIterable(postRepository.
-                findAll()).map(post -> {
-                    System.out.println(post.getBody());
-            return post;
-        });
-    }
-
     @GetMapping(value = "/home")
     public String index(Model model) {
-        model.addAttribute("images", postRepository.findAllDESC());
+        model.addAttribute("images", postService.findAllDESC());
         return "index.html";
 
     }
@@ -79,14 +78,14 @@ public class PostController {
 
     @PostMapping(value = "/posts")
     public ResponseEntity<Post> update(@RequestBody Post post) {
-        postRepository.save(post);
+        postService.save(post);
         return ResponseEntity.accepted().body(post);
     }
 
     @GetMapping(value = "/image/")
     public ResponseEntity<byte[]> getImage(@RequestParam("image_id") Long imageId) throws SQLException {
 
-        Optional<Post> post = postRepository.findById(imageId);
+        Optional<Post> post = postService.findById(imageId);
 
         final HttpHeaders headers = new HttpHeaders();
         if( post.isPresent()) {
@@ -123,7 +122,7 @@ public class PostController {
 
         try {
             Post post = new Post(text, file, formatType);
-            postRepository.save(post);
+            postService.save(post);
         } catch (IOException | SQLException e) {
             e.printStackTrace();
         }
@@ -134,7 +133,7 @@ public class PostController {
 
     @PostMapping(value = "remove/{id}")
     public String remove(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
-        postRepository.deleteById(id);
+        postService.deleteById(id);
         return "redirect:/home";
     }
 

@@ -50,12 +50,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
             .and()
             .authorizeRequests()
-            .antMatchers("/userAccounts/**").hasRole("ADMIN")
+            .antMatchers("/").permitAll()
+            .antMatchers("/userAccounts/**", "/imgUpload/**").hasRole("ADMIN")
             .antMatchers("/home").hasRole("USER")
-            .antMatchers("/imgUpload/**").permitAll()
             .anyRequest()
             .authenticated()
-
             .and()
             .addFilter(new JWTAuthenticationFilter(authenticationManager(), authorityService))
             .addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtBlacklistRepo))
@@ -75,7 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity webSecurity) throws Exception{
-        webSecurity.ignoring().antMatchers("/", "/css/**", "/js/**", "/img/**");
+        webSecurity.ignoring().antMatchers( "/css/**", "/js/**", "/img/**");
     }
 
     @Override

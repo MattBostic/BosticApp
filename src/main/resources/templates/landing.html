@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.springframework.org/schema/data/jaxb" layout:decorator="layouts/default">
+      xmlns:th="http://www.springframework.org/schema/data/jaxb" xmlns:sec="http://www.w3.org/1999/xhtml"
+      layout:decorator="layouts/default">
 <head><link th:href="@{/css/landing.css}" rel="stylesheet" type="text/css"/></head>
 <body>
     <div id="page" layout:fragment="content">
@@ -8,9 +9,11 @@
             <header>Bostic Family Blog</header>
             <p>Welcome to our piece of the internet.<br>
                 You should have received a user login from one of us "Adults".<br>
-                Please click login and enter the credentials there.
             </p>
-            <button id="login" onclick="window.location.href = document.URL +'login'"> login</button>
+
+            <a sec:authorize="isAnonymous()" th:href="@{/login}"> login</a>
+            <a sec:authorize="isAuthenticated()" th:href="@{/home}">Home</a>
+            <a sec:authorize="isAuthenticated()" th:href="@{/logout}">logout</a>
 
         </div>
     </div>

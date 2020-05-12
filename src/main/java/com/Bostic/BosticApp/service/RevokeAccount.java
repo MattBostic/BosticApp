@@ -1,30 +1,28 @@
 package com.Bostic.BosticApp.service;
 
-import com.Bostic.BosticApp.domains.AccountCredentials;
-import com.Bostic.BosticApp.domains.AccountCredentialsRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
 public class RevokeAccount extends AccountManagementService {
-    private AccountCredentialsRepository accountRepo;
+    private AccountCredentialsService accountService;
 
-    public RevokeAccount(AccountCredentialsRepository accountRepo) {
-        this.accountRepo = accountRepo;
-    }
-
-    public RevokeAccount(AccountCredentials account, AccountCredentialsRepository accountRepo) {
-        super(account);
-
-        this.accountRepo = accountRepo;
+    @Autowired
+    public RevokeAccount( AccountCredentialsService accountService) {
+        super();
+        this.accountService = accountService;
     }
 
     @Override
     boolean isInDatabase() {
-        if(hasAccount() && account.getId() != 0) return accountRepo.existsById(account.getId());
-        return false;
+        if(!hasAccount()) return false;
+        return accountService.usernameExists(getAccount());
     }
 
     public void deleteAccount(){
-        if (isInDatabase()){
-            accountRepo.delete(getAccount());
+        if (hasAccount() && isInDatabase()){
+            accountService.delete(getAccount());
         }
     }
 
@@ -32,7 +30,7 @@ public class RevokeAccount extends AccountManagementService {
         if (hasAccount() && getAccount().getRole().equals("admin")){
              if(isInDatabase()){
                  getAccount().setRole("user");
-                 accountRepo.save(getAccount());
+                 accountService.save(getAccount());
              }
         }
     }

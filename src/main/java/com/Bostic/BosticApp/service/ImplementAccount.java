@@ -1,26 +1,24 @@
 package com.Bostic.BosticApp.service;
 
 import com.Bostic.BosticApp.domains.AccountCredentials;
-import com.Bostic.BosticApp.domains.AccountCredentialsRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ImplementAccount extends AccountManagementService {
-     private AccountCredentialsRepository accountRepo;
+    private AccountCredentialsService accountService;
 
-    public ImplementAccount(AccountCredentialsRepository accountRepo) {
+    @Autowired
+    public ImplementAccount( AccountCredentialsService accountService) {
         super();
-        this.accountRepo = accountRepo;
+        this.accountService = accountService;
     }
 
-    public ImplementAccount(AccountCredentials account,
-                            AccountCredentialsRepository accountRepo) {
-        super(account);
-        this.accountRepo = accountRepo;
-    }
 
     @Override
-    boolean isInDatabase() {
-        if(hasAccount() && account.getId() != 0) return accountRepo.existsById(account.getId());
-        return false;
+    public boolean isInDatabase() {
+        if(!hasAccount()) return false;
+        return accountService.usernameExists(getAccount());
     }
 
 
@@ -30,14 +28,14 @@ public class ImplementAccount extends AccountManagementService {
             AccountCredentials savedAccount = new AccountCredentials(getAccount().getUsername(),
                     getAccount().getPassword());
 
-            accountRepo.save(savedAccount);
+            accountService.save(savedAccount);
         }
     }
 
     public void changePassword(String password){
         if(isInDatabase()){
             getAccount().setPassword(password);
-            accountRepo.save(getAccount());
+            accountService.save(getAccount());
         }
     }
 }

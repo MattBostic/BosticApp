@@ -20,6 +20,9 @@ import java.sql.Date;
 
 import static com.Bostic.BosticApp.security.SecurityConstants.SECRET;
 
+// TODO: change direct dependency for the JWT repository.
+//  Repo service needs to be injected to decouple the
+//  controller from direct database calls.
 @Controller
 public class LogoutController implements LogoutHandler {
 

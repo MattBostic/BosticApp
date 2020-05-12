@@ -2,15 +2,14 @@ package com.Bostic.BosticApp.service;
 
 import com.Bostic.BosticApp.domains.AccountCredentials;
 
+
 public abstract class AccountManagementService {
-    AccountCredentials account;
+    protected AccountCredentialsService accountService;
+    protected AccountCredentials account;
 
-    public AccountManagementService() {
+    AccountManagementService(){
     }
 
-    public AccountManagementService(AccountCredentials account) {
-        this.account = account;
-    }
 
     public void setAccount(AccountCredentials account) {
         this.account = account;
