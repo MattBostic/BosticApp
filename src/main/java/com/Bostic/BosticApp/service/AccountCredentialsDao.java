@@ -9,12 +9,12 @@ import java.util.Optional;
 
 
 @Service
-public class AccountCredentialsService {
+public class AccountCredentialsDao {
 
     private AccountCredentialsRepository accountRepo;
 
     @Autowired
-    public AccountCredentialsService(AccountCredentialsRepository accountRepo) {
+    public AccountCredentialsDao(AccountCredentialsRepository accountRepo) {
         this.accountRepo = accountRepo;
     }
 

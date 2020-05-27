@@ -56,6 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .anyRequest()
             .authenticated()
             .and()
+
             .addFilter(new JWTAuthenticationFilter(authenticationManager(), authorityService))
             .addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtBlacklistRepo))
             .addFilterAfter(new BlackListFilter(jwtBlacklistRepo), JWTAuthorizationFilter.class)

@@ -6,23 +6,23 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RevokeAccount extends AccountManagementService {
-    private AccountCredentialsService accountService;
+    private AccountCredentialsDao accountDao;
 
     @Autowired
-    public RevokeAccount( AccountCredentialsService accountService) {
+    public RevokeAccount( AccountCredentialsDao accountService) {
         super();
-        this.accountService = accountService;
+        this.accountDao = accountService;
     }
 
     @Override
     boolean isInDatabase() {
         if(!hasAccount()) return false;
-        return accountService.usernameExists(getAccount());
+        return accountDao.usernameExists(getAccount());
     }
 
     public void deleteAccount(){
         if (hasAccount() && isInDatabase()){
-            accountService.delete(getAccount());
+            accountDao.delete(getAccount());
         }
     }
 
@@ -30,7 +30,7 @@ public class RevokeAccount extends AccountManagementService {
         if (hasAccount() && getAccount().getRole().equals("admin")){
              if(isInDatabase()){
                  getAccount().setRole("user");
-                 accountService.save(getAccount());
+                 accountDao.save(getAccount());
              }
         }
     }

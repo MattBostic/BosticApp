@@ -3,7 +3,7 @@ package com.Bostic.BosticApp.controller;
 
 import com.Bostic.BosticApp.domains.AccountCredentials;
 import com.Bostic.BosticApp.domains.AccountCredentialsRepository;
-import com.Bostic.BosticApp.service.AccountCredentialsService;
+import com.Bostic.BosticApp.service.AccountCredentialsDao;
 import com.Bostic.BosticApp.service.ImplementAccount;
 import com.Bostic.BosticApp.service.RevokeAccount;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import java.util.Objects;
 public class UserController {
     private AccountCredentialsRepository accountRepo;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-    private AccountCredentialsService credentialsService;
+    private AccountCredentialsDao credentialsService;
     private ImplementAccount implementAccount;
     private RevokeAccount revokeAccount;
 
@@ -30,7 +30,7 @@ public class UserController {
 
     @Autowired
     public UserController(AccountCredentialsRepository accountRepo, BCryptPasswordEncoder bCryptPasswordEncoder,
-                          AccountCredentialsService credentialService, ImplementAccount implementAccount,
+                          AccountCredentialsDao credentialService, ImplementAccount implementAccount,
                           RevokeAccount revokeAccount){
         this.accountRepo = accountRepo;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;

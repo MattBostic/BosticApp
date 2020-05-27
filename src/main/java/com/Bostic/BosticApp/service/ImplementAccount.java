@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ImplementAccount extends AccountManagementService {
-    private AccountCredentialsService accountService;
+    private AccountCredentialsDao accountService;
 
     @Autowired
-    public ImplementAccount( AccountCredentialsService accountService) {
+    public ImplementAccount( AccountCredentialsDao accountService) {
         super();
         this.accountService = accountService;
     }

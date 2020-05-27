@@ -2,8 +2,10 @@ package com.Bostic.BosticApp.security;
 
 import com.Bostic.BosticApp.domains.AccountCredentials;
 import com.Bostic.BosticApp.service.AuthorityService;
+import com.Bostic.BosticApp.service.CaptchaService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
-import java.util.stream.Collectors;
 
 import static com.Bostic.BosticApp.security.SecurityConstants.EXPIRATION_TIME;
 import static com.Bostic.BosticApp.security.SecurityConstants.SECRET;
@@ -28,7 +29,10 @@ import static com.Bostic.BosticApp.security.SecurityConstants.SECRET;
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authManager;
     private AuthorityService authorityService;
+    private AccountCredentials credentials;
+    private CaptchaService captchaService = new CaptchaService();
 
+    @Autowired
     public JWTAuthenticationFilter(AuthenticationManager authManager, AuthorityService authorityService){
         this.authManager = authManager;
         this.authorityService = authorityService;
@@ -48,13 +52,20 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             throws AuthenticationException {
 
         try {
-            // Request is sent as formData. The request is split by username/password then
-            // substringed. This has opportunity for improvement.
-            String[] list;
-            String string = request.getReader().lines().collect(Collectors.joining());
-           list = string.split("&");
+            // form data format is shown below
+            // username=UsernameValue&password=PasswordValue&recaptcha_response=recaptcha_responseValue
+            // UsernameValue = index 1  PasswordValue = index 3 ReCAPTCHAValue = index 5
 
-            AccountCredentials credentials  = new AccountCredentials(list[0].substring(9), list[1].substring(9));
+            String formData = request.getReader().readLine();
+            String[] formArray = formData.split("[&=]");
+            String username, password, recaptcha;
+            username = formArray[1];
+            password = formArray[3];
+            recaptcha = formArray[5];
+
+            if(captchaService.validateCaptcha(recaptcha)){
+              credentials = new AccountCredentials(username,password);
+            }else credentials = new AccountCredentials("","");
 
             return authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -63,7 +74,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                             authorityService.setAuthorities(credentials)
                     )
             );
-        } catch (IOException e) {
+
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

@@ -5,7 +5,7 @@ import com.Bostic.BosticApp.domains.JWTBlacklistRepository;
 import com.Bostic.BosticApp.domains.Post;
 import com.Bostic.BosticApp.domains.PostRepository;
 import com.Bostic.BosticApp.security.TokenAuthentication;
-import com.Bostic.BosticApp.service.AccountCredentialsService;
+import com.Bostic.BosticApp.service.AccountCredentialsDao;
 import com.Bostic.BosticApp.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -39,7 +39,7 @@ import java.util.Optional;
 public class PostController {
     @Autowired
     private PostRepository postRepository;
-    private AccountCredentialsService credentialsService;
+    private AccountCredentialsDao credentialsService;
     @Autowired
     private PostService postService;
     @Autowired

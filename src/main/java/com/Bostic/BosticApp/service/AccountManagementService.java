@@ -4,7 +4,7 @@ import com.Bostic.BosticApp.domains.AccountCredentials;
 
 
 public abstract class AccountManagementService {
-    protected AccountCredentialsService accountService;
+    protected AccountCredentialsDao accountDao;
     protected AccountCredentials account;
 
     AccountManagementService(){
