@@ -26,12 +26,13 @@ import java.util.Arrays;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JWTBlacklistRepository jwtBlacklistRepo;
     private AccountDetailsService accountService;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
     private AuthorityService authorityService;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
 
-    public SecurityConfig(JWTBlacklistRepository jwtBlacklistRepo, AccountDetailsService accountService, AuthorityService authorityService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public SecurityConfig(JWTBlacklistRepository jwtBlacklistRepo, AccountDetailsService accountService,
+                          AuthorityService authorityService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.jwtBlacklistRepo = jwtBlacklistRepo;
         this.accountService = accountService;
         this.authorityService = authorityService;
@@ -43,24 +44,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new LogoutController( jwtBlacklistRepo);
     }
 
-//    @Bean
-//    public LogoutHandler logoutHandler(){return new LogoutController( jwtBlacklistRepo);}
-
-
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
     http.csrf().disable().cors()
 
             .and()
             .authorizeRequests()
-            .antMatchers("/userAccounts/**").hasRole("ADMIN")
+            .antMatchers("/").permitAll()
+            .antMatchers("/userAccounts/**", "/imgUpload/**").hasRole("ADMIN")
             .antMatchers("/home").hasRole("USER")
-            .antMatchers("/imgUpload/**").permitAll()
             .anyRequest()
             .authenticated()
-
             .and()
+
             .addFilter(new JWTAuthenticationFilter(authenticationManager(), authorityService))
             .addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtBlacklistRepo))
             .addFilterAfter(new BlackListFilter(jwtBlacklistRepo), JWTAuthorizationFilter.class)
@@ -79,7 +75,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity webSecurity) throws Exception{
-        webSecurity.ignoring().antMatchers("/", "/css/**", "/js/**", "/img/**");
+        webSecurity.ignoring().antMatchers( "/css/**", "/js/**", "/img/**");
     }
 
     @Override

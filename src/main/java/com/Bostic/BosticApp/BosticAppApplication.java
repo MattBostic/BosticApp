@@ -24,7 +24,6 @@ public class BosticAppApplication {
 
 		SpringApplication.run(BosticAppApplication.class, args);
 	}
-	
 
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder(){

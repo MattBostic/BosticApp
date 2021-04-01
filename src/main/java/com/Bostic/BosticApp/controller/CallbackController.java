@@ -21,7 +21,6 @@ import java.io.IOException;
 //@Controller
 public class CallbackController {
 
-//    @Autowired
     private AuthenticationController controller;
     private final String redirectOnFail;
     private final String redirectOnSuccess;

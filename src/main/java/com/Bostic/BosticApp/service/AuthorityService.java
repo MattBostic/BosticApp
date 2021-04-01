@@ -13,6 +13,7 @@ import java.util.ArrayList;
 @Service
 public class AuthorityService {
     @Autowired
+    private
     JWTBlacklistRepository jwtRepo;
     public AuthorityService() {
     }

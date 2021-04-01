@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Family Blog</title>
+    <link th:href="@{/css/main.css}" rel="stylesheet" type="text/css"/>
+
+</head>
+<body>
+    <div th:replace="fragments/header"></div>
+    <div th:replace="fragments/adminFunctions :: create-form"></div>
+    <div th:replace="fragments/adminFunctions :: account-delete"></div>
+
+
+</body>
+<script type="text/javascript" th:src="@{/js/verifyPassword.js}"></script>
+</html>
